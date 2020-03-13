@@ -1,8 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 import App from './App';
+import './index.css';
+import { makeServer } from './makeServer';
 import * as serviceWorker from './serviceWorker';
+
+if (process.env.REACT_APP_MOCK_SERVER) {
+  makeServer();
+}
 
 ReactDOM.render(<App />, document.getElementById('root'));
 
