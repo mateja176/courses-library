@@ -17,38 +17,51 @@ function App() {
   return (
     <div>
       <h1>Authors</h1>
-      {state.value === 'initial' && (
-        <button
-          onClick={() => {
-            send({ type: 'FETCH' });
-          }}
-        >
-          Fetch
-        </button>
-      )}
-      {state.value === 'failure' && (
-        <div>
-          <p>{state.context.error}</p>
-          <button
-            onClick={() => {
-              send({ type: 'RETRY' });
-            }}
-          >
-            Retry
-          </button>
-        </div>
-      )}
-      {state.value === 'loading' && <div>Loading...</div>}
-      <ol>
-        {state.context.data.map(({ id, name, age, mainCategory }) => (
-          <li key={id}>
-            <h2>
-              {name}, {age}
-            </h2>
-            <p>{mainCategory}</p>
-          </li>
-        ))}
-      </ol>
+      {(() => {
+        switch (state.value) {
+          case 'initial':
+            return (
+              <button
+                onClick={() => {
+                  send({ type: 'FETCH' });
+                }}
+              >
+                Fetch
+              </button>
+            );
+
+          case 'loading':
+            return <div>Loading...</div>;
+
+          case 'failure':
+            return (
+              <div>
+                <p>{state.context.error}</p>
+                <button
+                  onClick={() => {
+                    send({ type: 'RETRY' });
+                  }}
+                >
+                  Retry
+                </button>
+              </div>
+            );
+
+          default:
+            return (
+              <ol>
+                {state.context.data.map(({ id, name, age, mainCategory }) => (
+                  <li key={id}>
+                    <h2>
+                      {name}, {age}
+                    </h2>
+                    <p>{mainCategory}</p>
+                  </li>
+                ))}
+              </ol>
+            );
+        }
+      })()}
     </div>
   );
 }
