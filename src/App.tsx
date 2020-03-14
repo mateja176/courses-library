@@ -26,15 +26,17 @@ function App() {
           Fetch
         </button>
       )}
-      {state.value === 'failure' && <p>{state.context.error}</p>}
       {state.value === 'failure' && (
-        <button
-          onClick={() => {
-            send({ type: 'RETRY' });
-          }}
-        >
-          Retry
-        </button>
+        <div>
+          <p>{state.context.error}</p>
+          <button
+            onClick={() => {
+              send({ type: 'RETRY' });
+            }}
+          >
+            Retry
+          </button>
+        </div>
       )}
       {state.value === 'loading' && <div>Loading...</div>}
       <ol>
