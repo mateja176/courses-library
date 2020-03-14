@@ -36,6 +36,7 @@ function App() {
           Retry
         </button>
       )}
+      {state.value === 'loading' && <div>Loading...</div>}
       <ol>
         {state.context.data.map(({ id, name, age, mainCategory }) => (
           <li key={id}>
