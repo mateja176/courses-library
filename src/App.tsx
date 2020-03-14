@@ -22,7 +22,7 @@ function App() {
   return (
     <div>
       <h1>Authors</h1>
-      <ul>
+      <ol>
         {authors.map(({ id, name, age, mainCategory }) => (
           <li key={id}>
             <h2>
@@ -31,7 +31,7 @@ function App() {
             <p>{mainCategory}</p>
           </li>
         ))}
-      </ul>
+      </ol>
     </div>
   );
 }

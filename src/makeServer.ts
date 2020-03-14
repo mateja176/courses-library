@@ -1,21 +1,20 @@
 // @ts-ignore
 import { Server } from 'miragejs';
 import { Authors } from './App';
+import * as faker from 'faker';
+import { range } from 'ramda';
 
-const authors: Authors = [
-  {
-    id: '5b3621c0-7b12-4e80-9c8b-3398cba7ee05',
-    name: 'Seabury Toxic Reyson',
-    age: 329,
-    mainCategory: 'Maps',
-  },
-  {
-    id: '2ee49fe3-edf2-4f91-8409-3eb25ce6ca51',
-    name: 'Atherton Crow Ridley',
-    age: 298,
-    mainCategory: 'Rum',
-  },
-];
+const min = 0;
+
+const authors: Authors = range(
+  min,
+  faker.random.number({ min: min, max: 20 }),
+).map(() => ({
+  id: faker.random.uuid(),
+  name: faker.name.findName(),
+  age: faker.random.number({ min: 5, max: 120 }),
+  mainCategory: faker.random.arrayElement(['Rum', 'Maps', 'Singing', 'Ships']),
+}));
 
 export function makeServer() {
   const server = new Server({
