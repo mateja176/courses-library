@@ -5,12 +5,22 @@ import {
   Machine,
   MachineOptions,
   StateConfig,
+  StateSchema,
 } from 'xstate';
 import { Authors } from '../App';
 
 export interface FetchContext {
   data: Authors;
   error: Error | null;
+}
+
+export interface FetchStateSchema extends StateSchema {
+  states: {
+    initial: {};
+    loading: {};
+    success: {};
+    failure: {};
+  };
 }
 
 export interface Event<Type extends string> extends EventObject {
@@ -31,46 +41,48 @@ export type FetchRetry = Event<'RETRY'>;
 
 export type FetchEvent = Fetch | FetchSuccess | FetchFailure | FetchRetry;
 
-export const fetchMachine = Machine<FetchContext, FetchEvent>({
-  id: 'fetch',
-  initial: 'initial',
-  context: {
-    data: [],
-    error: null,
-  },
-  states: {
-    initial: {
-      on: {
-        FETCH: 'loading',
-      },
+export const fetchMachine = Machine<FetchContext, FetchStateSchema, FetchEvent>(
+  {
+    id: 'fetch',
+    initial: 'initial',
+    context: {
+      data: [],
+      error: null,
     },
-    loading: {
-      invoke: {
-        src: 'fetchData',
-        onDone: {
-          target: 'success',
-          actions: assign<FetchContext, FetchSuccess>({
-            data: (_, event) => event.data,
-          }),
-        },
-        onError: {
-          target: 'failure',
-          actions: assign<FetchContext, FetchFailure>({
-            error: (_, event) => event.data,
-          }),
+    states: {
+      initial: {
+        on: {
+          FETCH: 'loading',
         },
       },
-    },
-    success: {
-      type: 'final',
-    },
-    failure: {
-      on: {
-        RETRY: 'loading',
+      loading: {
+        invoke: {
+          src: 'fetchData',
+          onDone: {
+            target: 'success',
+            actions: assign<FetchContext, FetchSuccess>({
+              data: (_, event) => event.data,
+            }),
+          },
+          onError: {
+            target: 'failure',
+            actions: assign<FetchContext, FetchFailure>({
+              error: (_, event) => event.data,
+            }),
+          },
+        },
+      },
+      success: {
+        type: 'final',
+      },
+      failure: {
+        on: {
+          RETRY: 'loading',
+        },
       },
     },
   },
-});
+);
 
 export interface UseMachineOptions<TContext, TEvent extends EventObject> {
   /**
