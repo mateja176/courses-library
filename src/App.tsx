@@ -1,7 +1,7 @@
 import { useMachine } from '@xstate/react';
 import React from 'react';
 import './App.css';
-import { fetchMachine, fetchOptions } from './machines';
+import { fetchMachine, fetchOptions, FetchState } from './machines';
 
 export interface Author {
   id: string;
@@ -18,7 +18,7 @@ function App() {
     <div>
       <h1>Authors</h1>
       {(() => {
-        switch (state.value) {
+        switch (state.value as FetchState) {
           case 'initial':
             return (
               <button
@@ -47,7 +47,7 @@ function App() {
               </div>
             );
 
-          default:
+          case 'success':
             return (
               <ol>
                 {state.context.data.map(({ id, name, age, mainCategory }) => (

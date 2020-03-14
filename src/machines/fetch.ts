@@ -14,7 +14,24 @@ export interface FetchContext {
   error: Error | null;
 }
 
-export interface FetchStateSchema extends StateSchema {
+export const fetchStates = [
+  'initial',
+  'loading',
+  'success',
+  'failure',
+] as const;
+export type FetchStates = typeof fetchStates;
+export type FetchState = FetchStates[number];
+
+export const arrayToObject = <A extends ReadonlyArray<string>>(array: A) =>
+  array.reduce(
+    (object, current) => ({ ...object, [current]: current }),
+    {} as { [key in A[number]]: key },
+  );
+
+export const fetchState = arrayToObject(fetchStates);
+
+export interface FetchStateSchema extends StateSchema<Record<FetchState, {}>> {
   states: {
     initial: {};
     loading: {};
