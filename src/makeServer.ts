@@ -1,5 +1,5 @@
 // @ts-ignore
-import { Model, Server } from 'miragejs';
+import { Server } from 'miragejs';
 import { Authors } from './App';
 
 const authors: Authors = [
@@ -19,10 +19,6 @@ const authors: Authors = [
 
 export function makeServer() {
   const server = new Server({
-    models: {
-      author: Model,
-    },
-
     routes() {
       this.namespace = 'api';
 
