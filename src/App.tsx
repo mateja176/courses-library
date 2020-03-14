@@ -1,6 +1,7 @@
+import { useMachine } from '@xstate/react';
 import React from 'react';
 import './App.css';
-import { origin } from './models/origin';
+import { fetchMachine, fetchOptions } from './machines';
 
 export interface Author {
   id: string;
@@ -11,19 +12,32 @@ export interface Author {
 export type Authors = Author[];
 
 function App() {
-  const [authors, setAuthors] = React.useState<Authors>([]);
-
-  React.useEffect(() => {
-    fetch(`${origin}/api/authors`)
-      .then(res => res.json())
-      .then(setAuthors);
-  }, []);
+  const [state, send] = useMachine(fetchMachine, fetchOptions);
 
   return (
     <div>
       <h1>Authors</h1>
+      {state.value === 'initial' && (
+        <button
+          onClick={() => {
+            send({ type: 'FETCH' });
+          }}
+        >
+          Fetch
+        </button>
+      )}
+      {state.value === 'failure' && <p>{state.context.error}</p>}
+      {state.value === 'failure' && (
+        <button
+          onClick={() => {
+            send({ type: 'RETRY' });
+          }}
+        >
+          Retry
+        </button>
+      )}
       <ol>
-        {authors.map(({ id, name, age, mainCategory }) => (
+        {state.context.data.map(({ id, name, age, mainCategory }) => (
           <li key={id}>
             <h2>
               {name}, {age}
